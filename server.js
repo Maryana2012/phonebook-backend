@@ -1,17 +1,23 @@
-import app from './app.js'
+// const app = require('./app')
+import app from './app.js';
 import connectDb from './db/connect.js';
+import dotenv from 'dotenv';
 
-const { PORT } = process.env;
+dotenv.config();
 
-const startServer = async () => {
-  try {
+const {PORT} = process.env;
+
+const startServer = async()=>{
+   try {
    await connectDb();
    app.listen(PORT, () => {
-     console.log(`Server running. Use our API on port: ${PORT}`)
-   })
-  } catch (error) {
-    console.log(error.message)
-  }
+    console.log(`Server running. Use our API on port: ${PORT}`)
+  })
+   } catch (error) {
+     console.log(error)
+   }
+
 }
 
 startServer();
+
