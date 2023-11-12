@@ -25,13 +25,41 @@ const signup = async (req, res, next) => {
    
       await User.findByIdAndUpdate(newUser._id,{token})
       
-      res.status(201).json({user:{name, email,token}})
+      res.status(201).json({
+         token,
+         user:{name, email}})
    } catch (error) {
-   //  console.log(error)
     res.status(500).json({message: error.message})
    } 
 }
 
+const login =async (req,res,next) =>{
+   const {email, password} = req.body;
+   const searchedUser = await User.findOne({email});
+     if(!searchedUser){
+      res.status(401).json({message: "Email or password is wrong"} )
+      return
+   }
+   const compareResult = await searchedUser.comparePassword(password)
+ 
+   if(!compareResult) {
+      res.status(401).json({message: "Email or password is wrong"} )
+      return;
+   }
+   const payload = ({id: searchedUser._id})
+   const token = jwt.sign(payload, SECRET_KEY);
+   await User.findByIdAndUpdate(searchedUser._id, {token});
+   res.status(200).json( {
+      token:searchedUser.token,
+      user:{
+         name: searchedUser.name,
+         email
+      }
+   })
+
+}
+
 export default {
-    signup
+    signup,
+    login
 }
