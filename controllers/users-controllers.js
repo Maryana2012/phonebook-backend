@@ -25,10 +25,10 @@ const signup = async (req, res, next) => {
    
       await User.findByIdAndUpdate(newUser._id,{token})
       
-      res.status(201).json(newUser)
+      res.status(201).json({user:{name, email,token}})
    } catch (error) {
    //  console.log(error)
-    req.status(500).json({message: error.message})
+    res.status(500).json({message: error.message})
    } 
 }
 
