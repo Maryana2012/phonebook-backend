@@ -50,7 +50,7 @@ const login =async (req,res,next) =>{
    const token = jwt.sign(payload, SECRET_KEY);
    await User.findByIdAndUpdate(searchedUser._id, {token});
    res.status(200).json( {
-      token:searchedUser.token,
+      token,
       user:{
          name: searchedUser.name,
          email
@@ -59,7 +59,17 @@ const login =async (req,res,next) =>{
 
 }
 
+const logout = async (req, res, next)=>{
+   try {
+      const {_id} = req.user;
+      await User.findByIdAndUpdate(_id, {token:""});
+      res.status(204).send();
+   } catch (error) {
+       res.status(400).json({message:error.message});
+   }
+}
 export default {
     signup,
-    login
+    login,
+    logout
 }
