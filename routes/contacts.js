@@ -10,7 +10,7 @@ router.get('/',authenticate, controllers.getContacts)
 
 router.post('/', validateBody(addContactSchema), authenticate, controllers.addContact)
 
-router.delete('/:contactId',)
+router.delete('/:contactId', authenticate, controllers.deleteContact)
 
 router.put('/:contactId')
 
