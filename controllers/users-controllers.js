@@ -5,7 +5,7 @@ dotenv.config();
 
 const {SECRET_KEY} = process.env;
 
-const signup = async (req, res, next) => {
+const signup = async (req, res) => {
    const {name, email, password}=req.body;
   
    try {
@@ -33,7 +33,7 @@ const signup = async (req, res, next) => {
    } 
 }
 
-const login =async (req,res,next) =>{
+const login =async (req,res) =>{
    const {email, password} = req.body;
    const searchedUser = await User.findOne({email});
      if(!searchedUser){
@@ -59,7 +59,7 @@ const login =async (req,res,next) =>{
 
 }
 
-const logout = async (req, res, next)=>{
+const logout = async (req, res)=>{
    try {
       const {_id} = req.user;
       await User.findByIdAndUpdate(_id, {token:""});
@@ -68,8 +68,18 @@ const logout = async (req, res, next)=>{
        res.status(400).json({message:error.message});
    }
 }
+
+const getCurrentUser = async (req, res)=>{
+   const {email, name} = req.user;
+   res.json({
+      name,
+      email
+   }) 
+
+}
 export default {
     signup,
     login,
-    logout
+    logout,
+    getCurrentUser
 }
