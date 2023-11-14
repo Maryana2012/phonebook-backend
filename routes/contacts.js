@@ -8,7 +8,7 @@ const router = express.Router()
 
 router.get('/',authenticate, controllers.getContacts)
 
-router.post('/', validateBody(addContactSchema), authenticate,)
+router.post('/', validateBody(addContactSchema), authenticate, controllers.addContact)
 
 router.delete('/:contactId',)
 

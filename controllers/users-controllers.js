@@ -17,13 +17,13 @@ const signup = async (req, res) => {
 
       }
       const newUser = new User({name, email, password});
-      await  newUser.hashPassword(password);
-      await  newUser.save();
+      await newUser.hashPassword(password);
+      await newUser.save();
       const payload = {id: newUser._id};
 
       const token = jwt.sign(payload, SECRET_KEY);
    
-      await User.findByIdAndUpdate(newUser._id,{token})
+      await User.findByIdAndUpdate(newUser._id,{token});
       
       res.status(201).json({
          token,

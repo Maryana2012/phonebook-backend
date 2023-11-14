@@ -5,17 +5,35 @@ const getContacts = async (req, res) =>{
 
     const contacts = await Contact.find({owner});
 
-    res.json({contacts})
+    res.json(contacts)
 }
 
 const addContact = async (req, res)=>{
     const {name, number} = req.body;
-    const {owner} = req.user;
+    const {_id: owner} = req.user;
+      try {
+        const contactName = await Contact.findOne({name});
+        if(contactName){
+            res.status(409).json({message: "A contact with that name already exists"})
+        }
+        const newContact = new Contact({name, number, owner});
+        await newContact.save();
+        res.status(201).json({
+            name,
+            number,
+            owner
+        })
+
+      } catch (error) {
+        res.status(500).json({message: error.message})
+      }
+    
 
     
 
 }
 
 export default{
-    getContacts
+    getContacts,
+    addContact
 }
