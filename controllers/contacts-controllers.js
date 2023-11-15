@@ -33,8 +33,7 @@ const addContact = async (req, res)=>{
 
 const deleteContact = async(req, res)=>{
      const {contactId} = req.params;
-     console.log(contactId)
-    try {
+     try {
       const contact = await Contact.findById(contactId);
       if(!contact){
         res.status(404).json({message: "There is no such user collection."})
@@ -45,10 +44,25 @@ const deleteContact = async(req, res)=>{
     } catch (error) {
       res.status(500).json({message: error.message})
     }
+}
 
+const updateContact = async(req, res)=>{
+  const {contactId} = req.params;
+  const {name, number} = req.body;
+  try {
+    console.log(name, number)
+    const contact = await Contact.findById(contactId);
+    const updateContact = await Contact.findByIdAndUpdate(contactId, {name, number, owner:contact.owner}, {new:true})
+    res.json(updateContact)
+
+    
+  } catch (error) {
+    res.status(500).json({message: error.message})
+  }
 }
 export default{
     getContacts,
     addContact,
-    deleteContact
+    deleteContact,
+    updateContact
   }

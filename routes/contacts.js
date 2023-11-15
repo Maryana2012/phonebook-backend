@@ -12,6 +12,6 @@ router.post('/', validateBody(addContactSchema), authenticate, controllers.addCo
 
 router.delete('/:contactId', authenticate, controllers.deleteContact)
 
-router.put('/:contactId')
+router.put('/:contactId', authenticate, controllers.updateContact)
 
 export default router;
