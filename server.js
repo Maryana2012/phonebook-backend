@@ -1,4 +1,3 @@
-// const app = require('./app')
 import app from './app.js';
 import connectDb from './db/connect.js';
 import dotenv from 'dotenv';
