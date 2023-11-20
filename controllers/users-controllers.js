@@ -35,27 +35,32 @@ const signup = async (req, res) => {
 
 const login =async (req,res) =>{
    const {email, password} = req.body;
-   const searchedUser = await User.findOne({email});
-     if(!searchedUser){
-      res.status(401).json({message: "Email or password is wrong"} )
-      return
-   }
-   const compareResult = await searchedUser.comparePassword(password)
- 
-   if(!compareResult) {
-      res.status(401).json({message: "Email or password is wrong"} )
-      return;
-   }
-   const payload = ({id: searchedUser._id})
-   const token = jwt.sign(payload, SECRET_KEY);
-   await User.findByIdAndUpdate(searchedUser._id, {token});
-   res.status(200).json( {
-      token,
-      user:{
-         name: searchedUser.name,
-         email
+   try {
+      
+      const searchedUser = await User.findOne({email});
+        if(!searchedUser){
+         res.status(401).json({message: "Email or password is wrong"} )
+         return
       }
-   })
+      const compareResult = await searchedUser.comparePassword(password)
+    
+      if(!compareResult) {
+         res.status(401).json({message: "Email or password is wrong"} )
+         return;
+      }
+      const payload = ({id: searchedUser._id})
+      const token = jwt.sign(payload, SECRET_KEY);
+      await User.findByIdAndUpdate(searchedUser._id, {token});
+      res.status(200).json( {
+         token,
+         user:{
+            name: searchedUser.name,
+            email
+         }
+      })
+   } catch (error) {
+     res.status(500).json({message: error.message})
+   }
 
 }
 
