@@ -12,43 +12,23 @@ const addContact = async (req, res)=>{
     const {name, number} = req.body;
     const {_id: owner} = req.user;
     try {
-      const contacts =  await Contact.find({owner});
-      const isContact  = contacts.find(contact => contact.name === name)
-      if(isContact){
-        res.status(409).json({message: "A contact with that name already exists"})
-      } 
-      const newContact = new Contact({name, number, owner});
-      await newContact.save();
-      res.status(201).json({
-        _id: newContact._id,
-        name,
-        number,
-        owner,
-    })
+        const contactName = await Contact.findOne({name});
+        if(contactName){
+            res.status(409).json({message: "A contact with that name already exists"});
+            return
+        }
+        const newContact = new Contact({name, number, owner});
+        await newContact.save();
+        res.status(201).json({
+            _id: newContact._id,
+            name,
+            number,
+            owner,
+        })
 
-
-      
-    } catch (error) {
-      res.status(500).json({message: error.message})
-    }
-
-      // try {
-      //   const contactName = await Contact.findOne({name});
-      //   if(contactName){
-      //       res.status(409).json({message: "A contact with that name already exists"})
-      //   }
-        // const newContact = new Contact({name, number, owner});
-        // await newContact.save();
-        // res.status(201).json({
-        //     _id: newContact._id,
-        //     name,
-        //     number,
-        //     owner,
-        // })
-
-      // } catch (error) {
-      //   res.status(500).json({message: error.message})
-      // }
+      } catch (error) {
+        res.status(500).json({message: error.message})
+      }
 }
 
 
