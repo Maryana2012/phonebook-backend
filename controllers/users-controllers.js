@@ -97,19 +97,23 @@ const getCurrentUser = async (req, res)=>{
 
 const changeAvatar = async (req, res) =>{
    const {_id } = req.user;
-   const {path: tempDir , originalname} = req.file;
-  
-   const normalizeName =  replaceSpace(originalname);
-   const uniqueFileName = `${_id}-${normalizeName}`;
-   const avatarsPath = path.resolve('public', 'avatars');
-   const resultPath = path.join(avatarsPath, uniqueFileName);
-
-   await fs.copyFile(tempDir, resultPath);
-   const avatarURL = path.join('avatars', uniqueFileName);
-     
-   await User.findByIdAndUpdate(_id, {avatarURL});
-   res.status(200).json({avatar: avatarURL})
+   try {
+      const {path: tempDir , originalname} = req.file;
+      const normalizeName =  replaceSpace(originalname);
+      const uniqueFileName = `${_id}-${normalizeName}`;
+      const avatarsPath = path.resolve('public', 'avatars');
+      const resultPath = path.join(avatarsPath, uniqueFileName);
+   
+      await fs.copyFile(tempDir, resultPath);
+      const avatarURL = path.join('avatars', uniqueFileName);
+        
+      await User.findByIdAndUpdate(_id, {avatarURL});
+      res.status(200).json({avatar: avatarURL})
+   } catch (error) {
+      res.status(500).json({message: error.message})
+   }
 }
+
 export default {
     signup,
     login,
