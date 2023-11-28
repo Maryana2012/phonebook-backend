@@ -97,6 +97,7 @@ const getCurrentUser = async (req, res)=>{
 
 const changeAvatar = async (req, res) =>{
    const {_id } = req.user;
+   const {nameUpdate, emailUpdate, passwordUpdate} = req.body;
    try {
       const {path: tempDir , originalname} = req.file;
       const normalizeName =  replaceSpace(originalname);
@@ -106,6 +107,8 @@ const changeAvatar = async (req, res) =>{
    
       await fs.copyFile(tempDir, resultPath);
       const avatarURL = path.join('avatars', uniqueFileName);
+
+      
         
       await User.findByIdAndUpdate(_id, {avatarURL});
       res.status(200).json({avatar: avatarURL})
