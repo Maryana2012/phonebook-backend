@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import fs from 'fs/promises';
 import path from 'path';
 import gravatar from 'gravatar';
+import bcrypt from 'bcrypt'
 dotenv.config();
 
 const {SECRET_KEY} = process.env;
@@ -97,22 +98,41 @@ const getCurrentUser = async (req, res)=>{
 
 const changeAvatar = async (req, res) =>{
    const {_id } = req.user;
-   const {nameUpdate, emailUpdate, passwordUpdate} = req.body;
+   const {updateName, updateEmail, updatePassword} = req.body;
+
+
+   const {path: tempDir , originalname} = req.file;
    try {
-      const {path: tempDir , originalname} = req.file;
+     
       const normalizeName =  replaceSpace(originalname);
       const uniqueFileName = `${_id}-${normalizeName}`;
       const avatarsPath = path.resolve('public', 'avatars');
       const resultPath = path.join(avatarsPath, uniqueFileName);
-   
       await fs.copyFile(tempDir, resultPath);
       const avatarURL = path.join('avatars', uniqueFileName);
 
+      if(updatePassword){
+         const hashPassword = await bcrypt.hash(updatePassword, 10);
+         await User.findByIdAndUpdate(_id, {avatarURL, name:updateName, email: updateEmail, password: hashPassword}, {new:true});
+          res.status(200).json({
+            avatar: avatarURL,
+            name: updateName,
+            email: updateEmail
+          })
+          
+      }  else {
+         await User.findByIdAndUpdate(_id, {avatarURL, name:updateName, email: updateEmail}, {new:true});
+          res.status(200).json({
+            avatar: avatarURL,
+            name: updateName,
+            email: updateEmail
+          })
+      }
       
         
-      await User.findByIdAndUpdate(_id, {avatarURL});
-      res.status(200).json({avatar: avatarURL})
+      
    } catch (error) {
+      console.log(error.message)
       res.status(500).json({message: error.message})
    }
 }
