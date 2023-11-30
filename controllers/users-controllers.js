@@ -45,17 +45,17 @@ const signup = async (req, res) => {
 const login =async (req,res) =>{
    const {email, password} = req.body;
    try {
-      
       const searchedUser = await User.findOne({email});
-      
+         
         if(!searchedUser){
-         res.status(401).json({message: "Email or password is wrong"} )
+         res.status(401).json({message: "problem email"} )
          return
       }
       const compareResult = await searchedUser.comparePassword(password)
-    
+      
+      console.log(compareResult)
       if(!compareResult) {
-         res.status(401).json({message: "Email or password is wrong"} )
+         res.status(401).json({message: "problem password"} )
          return;
       }
       const payload = ({id: searchedUser._id})
@@ -112,13 +112,14 @@ const changeAvatar = async (req, res) =>{
          await User.findByIdAndUpdate(_id, {avatarURL:avatarURLNew}, {new:true})
       }
 
-      if(updatePassword){
+      if(updatePassword !=='undefined'){
+         console.log(updatePassword)
          const hashPassword = await bcrypt.hash(updatePassword, 10);
          await User.findByIdAndUpdate(_id, { password: hashPassword }, {new:true});
       }
-         await User.findByIdAndUpdate(_id, {name:updateName, email: updateEmail}, {new:true});
-        const user = await User.findById(_id)
-          res.status(200).json({
+      await User.findByIdAndUpdate(_id, {name:updateName, email: updateEmail}, {new:true});
+      const user = await User.findById(_id)
+      res.status(200).json({
             avatar: user.avatarURL,
             name: user.name,
             email: user.email
