@@ -97,9 +97,7 @@ const getCurrentUser = async (req, res)=>{
 
 
 const changeAvatar = async (req, res) =>{
-   const {_id, avatarURL } = req.user;
-   const user=req.user;
-
+   const {_id } = req.user;
    const {updateName, updateEmail, updatePassword} = req.body;
    
    try {
@@ -111,20 +109,21 @@ const changeAvatar = async (req, res) =>{
          const resultPath = path.join(avatarsPath, uniqueFileName);
          await fs.copyFile(tempDir, resultPath);
          const avatarURLNew = path.join('avatars', uniqueFileName);
-         await User.findByIdAndUpdate(_id, {avatarURL:avatarURLNew})
+         await User.findByIdAndUpdate(_id, {avatarURL:avatarURLNew}, {new:true})
       }
 
       if(updatePassword){
          const hashPassword = await bcrypt.hash(updatePassword, 10);
          await User.findByIdAndUpdate(_id, { password: hashPassword }, {new:true});
-          
+      }
          await User.findByIdAndUpdate(_id, {name:updateName, email: updateEmail}, {new:true});
+        const user = await User.findById(_id)
           res.status(200).json({
             avatar: user.avatarURL,
             name: user.name,
             email: user.email
           })
-      }
+      
    } catch (error) {
          res.status(500).json({message: error.message})
    }
