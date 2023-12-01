@@ -99,7 +99,7 @@ const getCurrentUser = async (req, res)=>{
 const changeAvatar = async (req, res) =>{
    const {_id } = req.user;
    const {updateName, updateEmail, updatePassword} = req.body;
-   
+
    try {
       if(req.file){
          const {path: tempDir , originalname} = req.file;
@@ -113,10 +113,10 @@ const changeAvatar = async (req, res) =>{
       }
 
       if(updatePassword !=='undefined'){
-         console.log(updatePassword)
          const hashPassword = await bcrypt.hash(updatePassword, 10);
          await User.findByIdAndUpdate(_id, { password: hashPassword }, {new:true});
       }
+      
       await User.findByIdAndUpdate(_id, {name:updateName, email: updateEmail}, {new:true});
       const user = await User.findById(_id)
       res.status(200).json({

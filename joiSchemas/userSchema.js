@@ -11,3 +11,10 @@ export const userLoginSchema = Joi.object({
     password: Joi.string().required()
 });
 
+export const userUpdateSchema = Joi.object({
+    avatar:Joi.string(),
+    updateName: Joi.string().required(),
+    updateEmail:Joi.string().required(),
+    updatePassword: Joi.string()
+})
+
