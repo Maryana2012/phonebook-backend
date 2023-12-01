@@ -12,12 +12,6 @@ const addContact = async (req, res)=>{
     const {name, number} = req.body;
     const {_id: owner} = req.user;
     try {
-    //     const contactName = await Contact.findOne({name});
-    //     console.log(contactName)
-    //     if(contactName){
-    //         res.status(409).json({message: "A contact with that name already exists"});
-    //         return
-    //     }
         const newContact = new Contact({name, number, owner});
         await newContact.save();
         res.status(201).json({

@@ -48,14 +48,14 @@ const login =async (req,res) =>{
       const searchedUser = await User.findOne({email});
          
         if(!searchedUser){
-         res.status(401).json({message: "problem email"} )
+         res.status(401).json({message: "Email or password is wrong"} )
          return
       }
       const compareResult = await searchedUser.comparePassword(password)
       
       console.log(compareResult)
       if(!compareResult) {
-         res.status(401).json({message: "problem password"} )
+         res.status(401).json({message: "Email or password is wrong"} )
          return;
       }
       const payload = ({id: searchedUser._id})
