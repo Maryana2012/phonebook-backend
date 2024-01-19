@@ -11,7 +11,7 @@
     "lint:fix": "eslint --fix **/*.js"
   },
   "engines": {
-    "node": ">=14.20.1",
+    "node": "20.9.0",
     "npm": "10.2.4"
   },
   "dependencies": {
